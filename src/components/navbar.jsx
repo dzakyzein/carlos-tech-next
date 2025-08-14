@@ -19,7 +19,7 @@ const Navbar = () => {
       {/* Start */}
       <div className='navbar-start'>
         <Link href='/' className='text-2xl font-bold'>
-          CarlosTech
+          Carlos Tech
         </Link>
       </div>
 
@@ -94,7 +94,6 @@ const Navbar = () => {
           </div>
         )}
 
-        {/* Mobile menu */}
         {/* Mobile Menu */}
         <div className='relative md:hidden'>
           <button
