@@ -8,3 +8,8 @@
   --color-secondary: #fdf6e3; /* Ivory Cream */
   --color-accent: #d4af37; /* Gold Accent */
 }
+
+html,
+body {
+  overflow-x: hidden;
+}

@@ -33,7 +33,7 @@ const products = [
 
 export default function PopularProducts() {
   return (
-    <section className='py-20 bg-secondary'>
+    <section className='py-20 bg-secondary' id='popular-product'>
       <div className='container mx-auto px-6'>
         <h2 className='text-3xl md:text-4xl font-bold text-primary text-center mb-12'>
           Produk Terpopuler
