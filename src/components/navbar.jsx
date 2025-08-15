@@ -15,7 +15,7 @@ const Navbar = () => {
   };
 
   return (
-    <div className='navbar bg-primary text-secondary px-4 md:px-8 shadow-md'>
+    <div className='navbar bg-primary text-secondary px-4 md:px-8 shadow-md fixed z-99'>
       {/* Start */}
       <div className='navbar-start'>
         <Link href='/' className='text-2xl font-bold'>
