@@ -5,6 +5,7 @@ import Services from '@/components/Services';
 import Workflow from '@/components/Workflow';
 import PopularProducts from '@/components/PopularProducts';
 import Testimonials from '@/components/Testimonials';
+import CTA from '@/components/CallToAction';
 
 export default function Home() {
   return (
@@ -16,6 +17,7 @@ export default function Home() {
       <Workflow />
       <PopularProducts />
       <Testimonials />
+      <CTA />
     </>
   );
 }
