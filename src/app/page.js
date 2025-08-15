@@ -1,5 +1,5 @@
 import Navbar from '@/components/Navbar';
-import Hero from '@/components/Hero';
+import Hero from '@/components/RailwayHero';
 import AboutSection from '@/components/AboutSection';
 import Services from '@/components/Services';
 import Workflow from '@/components/Workflow';
