@@ -3,21 +3,25 @@
 import { motion } from 'framer-motion';
 
 export default function About() {
+  const scrollToServices = () => {
+    document.getElementById('services')?.scrollIntoView({ behavior: 'smooth' });
+  };
+
   return (
     <section className='bg-secondary py-20'>
-      <div className='container mx-auto px-6 md:px-12 grid md:grid-cols-2 gap-12 items-center'>
+      <div className='container mx-auto px-6 md:px-12 grid grid-cols-1 md:grid-cols-2 gap-12 items-center'>
         {/* Gambar */}
         <motion.div
           initial={{ opacity: 0, x: -50 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className='flex justify-center'
+          transition={{ duration: 0.8, delay: 0.1 }}
+          className='flex justify-center w-lg'
         >
           <img
-            src='https://via.placeholder.com/500x350'
-            alt='Proses pembubutan mesin'
-            className='rounded-lg shadow-lg border-4 border-primary'
+            src='/about-img.jpg'
+            alt='Proses pembubutan mesin di Carlos Tech'
+            className='rounded-lg shadow-lg border-4 border-primary transform hover:scale-105 transition-transform duration-300'
           />
         </motion.div>
 
@@ -26,8 +30,11 @@ export default function About() {
           initial={{ opacity: 0, x: 50 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: 0.8, delay: 0.3 }}
         >
+          <p className='text-lg text-primary/70 mb-2 uppercase tracking-wide underline'>
+            Presisi & Kecepatan untuk Kebutuhan Anda
+          </p>
           <h2 className='text-3xl md:text-4xl font-bold text-primary mb-4'>
             Tentang Carlos Tech
           </h2>
@@ -41,9 +48,14 @@ export default function About() {
             Didukung peralatan modern dan tenaga ahli berpengalaman, kami
             menjamin hasil kerja yang presisi, cepat, dan berkualitas tinggi.
           </p>
-          <button className='btn bg-primary text-secondary hover:bg-primary/90'>
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={scrollToServices}
+            className='btn bg-primary text-secondary hover:bg-primary/90'
+          >
             Lihat Layanan
-          </button>
+          </motion.button>
         </motion.div>
       </div>
     </section>

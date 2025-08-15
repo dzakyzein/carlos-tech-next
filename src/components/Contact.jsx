@@ -13,17 +13,18 @@ export default function Contact() {
           <div>
             <h3 className='text-2xl font-semibold mb-4'>Hubungi Kami</h3>
             <p className='mb-2'>
-              📍 <strong>Alamat Workshop:</strong> Jl. Contoh No. 123, Solo
+              📍 <strong>Alamat Workshop:</strong> Jl. Joko Tingkir No.1,
+              Pajang, Kec. Laweyan, Kota Surakarta, Jawa Tengah 57161
             </p>
             <p className='mb-2'>
               📱 <strong>WhatsApp:</strong>{' '}
               <a
-                href='https://wa.me/6281234567890'
+                href='https://wa.me/6281226022666'
                 target='_blank'
                 rel='noopener noreferrer'
                 className='text-primary hover:underline'
               >
-                +62 812-3456-7890
+                +62 812-2602-2666
               </a>
             </p>
             <p className='mb-2'>
@@ -42,7 +43,7 @@ export default function Contact() {
             <h3 className='text-2xl font-semibold mb-4'>Lokasi Workshop</h3>
             <div className='rounded-lg overflow-hidden shadow-lg'>
               <iframe
-                src='https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3955.211879333792!2d110.8312287758436!3d-7.548909992463534!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e7a168f2b75b3fb%3A0x5f74fce3e6fbb72b!2sSolo!5e0!3m2!1sid!2sid!4v1692434523456!5m2!1sid!2sid'
+                src='https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3955.0617770499784!2d110.78122777484191!3d-7.568244192445837!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e7a14356253e1a7%3A0xf754c7217fe1ff8e!2sBengkel%20Carlos%20Tech!5e0!3m2!1sen!2sid!4v1755248313291!5m2!1sen!2sid'
                 width='100%'
                 height='300'
                 style={{ border: 0 }}

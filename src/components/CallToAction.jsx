@@ -41,7 +41,7 @@ export default function CTA() {
               Pesan Sekarang
             </a>
             <a
-              href='https://wa.me/6281234567890'
+              href='https://wa.me/6281226022666'
               target='_blank'
               rel='noopener noreferrer'
               className='border border-accent text-accent px-6 py-3 rounded-full font-semibold hover:bg-accent hover:text-primary transition'

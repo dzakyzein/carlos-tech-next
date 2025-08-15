@@ -20,8 +20,11 @@ const Footer = () => {
           {/* Kontak */}
           <div>
             <h4 className='text-lg font-semibold mb-4'>Hubungi Kami</h4>
-            <p className='mb-2'>📍 Jl. Contoh No. 123, Solo</p>
-            <p className='mb-2'>📱 +62 812-3456-7890</p>
+            <p className='mb-2'>
+              📍 Jl. Joko Tingkir No.1, Pajang, Kec. Laweyan, Kota Surakarta,
+              Jawa Tengah 57161
+            </p>
+            <p className='mb-2'>📱 +62 812-2602-2666</p>
             <p>📧 carlostech@email.com</p>
           </div>
         </div>

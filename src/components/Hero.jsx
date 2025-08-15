@@ -44,7 +44,7 @@ export default function Hero() {
               whileTap={{ scale: 0.95 }}
               className='btn btn-outline border-secondary text-secondary hover:bg-secondary hover:text-primary'
               onClick={() =>
-                window.open('https://wa.me/6281234567890', '_blank')
+                window.open('https://wa.me/6281226022666', '_blank')
               }
             >
               Hubungi Penjual
