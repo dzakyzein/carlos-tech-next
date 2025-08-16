@@ -5,8 +5,9 @@ import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const Navbar = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(true); // simulasi login
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // default: belum login
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   const dropdownVariants = {
     hidden: { opacity: 0, y: -5 },
@@ -15,7 +16,7 @@ const Navbar = () => {
   };
 
   return (
-    <div className='navbar bg-secondary text-primary px-4 md:px-8 shadow-md fixed z-99'>
+    <div className='navbar bg-secondary text-primary px-4 md:px-8 shadow-md fixed w-full z-50'>
       {/* Start */}
       <div className='navbar-start'>
         <Link href='/' className='text-2xl font-bold'>
@@ -23,7 +24,7 @@ const Navbar = () => {
         </Link>
       </div>
 
-      {/* Center */}
+      {/* Center menu (desktop) */}
       <div className='navbar-center hidden md:flex space-x-8'>
         <Link
           href='/'
@@ -47,6 +48,7 @@ const Navbar = () => {
 
       {/* End */}
       <div className='navbar-end'>
+        {/* Desktop login state */}
         {!isLoggedIn ? (
           <div className='hidden md:flex space-x-4'>
             <Link
@@ -80,7 +82,7 @@ const Navbar = () => {
                   animate='visible'
                   exit='exit'
                   variants={dropdownVariants}
-                  className='menu menu-sm dropdown-content absolute right-0 mt-3 z-[1] p-2 shadow bg-secondary text-primary rounded-box w-48'
+                  className='absolute right-0 mt-3 z-[1] p-2 shadow bg-secondary text-primary rounded-box w-48'
                 >
                   <li>
                     <Link href='/profile'>Profile</Link>
@@ -97,14 +99,14 @@ const Navbar = () => {
         {/* Mobile Menu */}
         <div className='relative md:hidden'>
           <button
-            onClick={() => setDropdownOpen(!dropdownOpen)}
+            onClick={() => setMobileOpen(!mobileOpen)}
             className='btn btn-ghost p-2'
           >
             &#9776;
           </button>
 
           <AnimatePresence>
-            {dropdownOpen && (
+            {mobileOpen && (
               <motion.ul
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
