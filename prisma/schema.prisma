@@ -1,0 +1,68 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  name      String
+  email     String    @unique
+  password  String
+  role      Role      @default(customer)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  reservations Reservation[]
+}
+
+model Reservation {
+  id           Int       @id @default(autoincrement())
+  name         String
+  phone        String
+  address      String
+  type         String
+  amount       Int
+  note         String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  userId       Int
+  user         User      @relation(fields: [userId], references: [id])
+  status       PaymentStatus @default(BELUM_LUNAS)
+  price        Float
+  progress     Progress  @default(P0)
+  paymentProof String?
+  paidAt       DateTime?
+}
+
+model Tool {
+  id          Int      @id @default(autoincrement())
+  title       String
+  type        String
+  description String?
+  image       String?
+  imageUrl    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+enum Role {
+  customer
+  admin
+  mechanic
+}
+
+enum PaymentStatus {
+  LUNAS
+  BELUM_LUNAS
+}
+
+enum Progress {
+  P0
+  P25
+  P50
+  P75
+  P100
+}

@@ -16,12 +16,12 @@ export default function About() {
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8, delay: 0.1 }}
-          className='flex justify-center w-lg'
+          className='flex justify-center'
         >
           <img
             src='/about-img.jpg'
             alt='Proses pembubutan mesin di Carlos Tech'
-            className='rounded-lg shadow-lg border-4 border-primary transform hover:scale-105 transition-transform duration-300'
+            className='w-full max-w-md md:max-w-lg h-auto rounded-lg shadow-lg border-4 border-primary transform hover:scale-105 transition-transform duration-300'
           />
         </motion.div>
 
