@@ -1,4 +1,10 @@
 @import 'tailwindcss';
+@import 'tw-animate-css';
+
+/*
+  Plugin DaisyUI harus selalu diimpor terakhir untuk menghindari konflik
+  dengan utilitas Tailwind lainnya.
+*/
 @plugin "daisyui" {
   themes: mytheme --default;
 }
@@ -12,4 +18,56 @@
 html,
 body {
   overflow-x: hidden;
+}
+
+/*
+  Ini adalah inti dari perbaikan. Kita mendefinisikan variabel CSS
+  shadcn/ui di sini, tetapi TANPA menggunakan @apply di @layer base
+  sehingga tidak merusak layout. Komponen shadcn/ui akan secara
+  otomatis mengambil nilai ini.
+*/
+:root {
+  --background: 236 33% 97%;
+  --foreground: 211 100% 12%;
+  --card: 236 33% 97%;
+  --card-foreground: 211 100% 12%;
+  --popover: 236 33% 97%;
+  --popover-foreground: 211 100% 12%;
+  --primary: 211 100% 12%;
+  --primary-foreground: 0 0% 99%;
+  --secondary: 47 72% 96%;
+  --secondary-foreground: 211 100% 12%;
+  --muted: 47 72% 90%;
+  --muted-foreground: 211 100% 30%;
+  --accent: 45 78% 52%;
+  --accent-foreground: 211 100% 12%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 0 0% 99%;
+  --border: 211 100% 20%;
+  --input: 211 100% 20%;
+  --ring: 211 100% 40%;
+  --radius: 0.625rem;
+}
+
+/* TEMA GELAP (opsional) */
+.dark {
+  --background: 211 100% 12%;
+  --foreground: 47 72% 96%;
+  --card: 211 100% 20%;
+  --card-foreground: 47 72% 96%;
+  --popover: 211 100% 20%;
+  --popover-foreground: 47 72% 96%;
+  --primary: 47 72% 96%;
+  --primary-foreground: 211 100% 12%;
+  --secondary: 211 100% 20%;
+  --secondary-foreground: 47 72% 96%;
+  --muted: 211 100% 20%;
+  --muted-foreground: 47 72% 80%;
+  --accent: 45 78% 52%;
+  --accent-foreground: 211 100% 12%;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 0 0% 99%;
+  --border: 211 100% 25%;
+  --input: 211 100% 25%;
+  --ring: 211 100% 30%;
 }

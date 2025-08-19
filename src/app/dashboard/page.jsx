@@ -1,36 +1,35 @@
-'use client';
+import { AppSidebar } from '@/components/dashboard/app-sidebar';
+import { ChartAreaInteractive } from '@/components/dashboard/chart-area-interactive';
+import { DataTable } from '@/components/dashboard/data-table';
+import { SectionCards } from '@/components/dashboard/section-cards';
+import { SiteHeader } from '@/components/dashboard/site-header';
+import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 
-import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import data from './data.json';
 
-export default function Dashboard() {
-  const { data: session, status } = useSession();
-  const router = useRouter();
-
-  useEffect(() => {
-    if (status === 'loading') return; // jangan redirect pas masih loading
-    if (!session) {
-      router.push('/login'); // kalau belum login
-    } else if (session.user.role !== 'admin') {
-      router.push('/'); // kalau bukan admin
-    }
-  }, [session, status, router]);
-
-  if (status === 'loading') {
-    return <p>Loading...</p>;
-  }
-
-  if (!session || session.user.role !== 'admin') {
-    return null; // biar nggak sempat render isi dashboard
-  }
-
+export default function Page() {
   return (
-    <div className='p-10'>
-      <h1 className='text-2xl font-bold'>Welcome to Admin Dashboard 🚀</h1>
-      <p>
-        Hai {session.user.name}, role kamu adalah <b>{session.user.role}</b>
-      </p>
-    </div>
+    <SidebarProvider
+      style={{
+        '--sidebar-width': 'calc(var(--spacing) * 72)',
+        '--header-height': 'calc(var(--spacing) * 12)',
+      }}
+    >
+      <AppSidebar variant='inset' />
+      <SidebarInset>
+        <SiteHeader />
+        <div className='flex flex-1 flex-col'>
+          <div className='@container/main flex flex-1 flex-col gap-2'>
+            <div className='flex flex-col gap-4 py-4 md:gap-6 md:py-6'>
+              <SectionCards />
+              <div className='px-4 lg:px-6'>
+                <ChartAreaInteractive />
+              </div>
+              <DataTable data={data} />
+            </div>
+          </div>
+        </div>
+      </SidebarInset>
+    </SidebarProvider>
   );
 }
