@@ -2,9 +2,9 @@
 
 export default function Contact() {
   return (
-    <section id='kontak' className='bg-secondary text-primary py-16'>
+    <section id='kontak' className='bg-secondarylp text-primarylp py-16'>
       <div className='container mx-auto px-6 lg:px-20'>
-        <h2 className='text-3xl font-bold text-primary mb-20 text-center'>
+        <h2 className='text-3xl font-bold text-primarylp mb-20 text-center'>
           Kontak & Lokasi
         </h2>
 
@@ -22,7 +22,7 @@ export default function Contact() {
                 href='https://wa.me/6281226022666'
                 target='_blank'
                 rel='noopener noreferrer'
-                className='text-primary hover:underline'
+                className='text-primarylp hover:underline'
               >
                 +62 812-2602-2666
               </a>
@@ -31,7 +31,7 @@ export default function Contact() {
               📧 <strong>Email:</strong>{' '}
               <a
                 href='mailto:carlostech@email.com'
-                className='text-primary hover:underline'
+                className='text-primarylp hover:underline'
               >
                 carlostech@email.com
               </a>

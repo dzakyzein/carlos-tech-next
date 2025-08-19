@@ -11,7 +11,7 @@ export default function Hero() {
 
   return (
     <section
-      className='relative bg-gradient-to-r from-primary to-accent min-h-screen flex items-center'
+      className='relative bg-gradient-to-r from-primary to-accentlp min-h-screen flex items-center'
       style={{
         backgroundImage: 'url(/bg-hero.png)',
         backgroundSize: 'cover',
@@ -28,10 +28,10 @@ export default function Hero() {
           transition={{ duration: 0.8 }}
           className='max-w-2xl text-center md:text-left'
         >
-          <h1 className='text-4xl md:text-6xl font-bold text-secondary leading-tight drop-shadow-lg'>
+          <h1 className='text-4xl md:text-6xl font-bold text-secondarylp leading-tight drop-shadow-lg'>
             Ahli Pembubutan Mesin Presisi
           </h1>
-          <p className='mt-6 text-secondary/90 text-lg drop-shadow'>
+          <p className='mt-6 text-secondarylp/90 text-lg drop-shadow'>
             Carlos Tech melayani pembubutan komponen mesin dengan tingkat
             presisi tinggi, cocok untuk industri, bengkel, maupun kebutuhan
             perorangan. Pengerjaan rapi, cepat, dan sesuai spesifikasi.
@@ -42,7 +42,7 @@ export default function Hero() {
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className='btn btn-outline border-secondary text-secondary hover:bg-secondary hover:text-primary'
+              className='btn btn-outline border-secondary text-secondarylp hover:bg-secondarylp hover:text-primarylp'
               onClick={() =>
                 window.open('https://wa.me/6281226022666', '_blank')
               }
@@ -54,7 +54,7 @@ export default function Hero() {
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className='btn bg-secondary text-primary hover:bg-secondary/90'
+              className='btn bg-secondarylp text-primarylp hover:bg-secondarylp/90'
               onClick={scrollToPopularProduct}
             >
               Lihat Produk

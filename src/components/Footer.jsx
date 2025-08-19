@@ -4,13 +4,15 @@ import { motion } from 'framer-motion';
 
 const Footer = () => {
   return (
-    <footer className='bg-primary text-secondary py-8'>
+    <footer className='bg-primarylp text-secondarylp py-8'>
       <div className='container mx-auto px-6 lg:px-20'>
         <div className='grid md:grid-cols-2 gap-8'>
           {/* Logo & Deskripsi */}
           <div>
-            <h3 className='text-2xl font-bold text-accent mb-4'>Carlos Tech</h3>
-            <p className='text-secondary/80'>
+            <h3 className='text-2xl font-bold text-accentlp mb-4'>
+              Carlos Tech
+            </h3>
+            <p className='text-secondarylp/80'>
               Spesialis pembubutan mesin presisi untuk industri, bengkel, dan
               kebutuhan custom. Kualitas terjamin, pengerjaan cepat, sesuai
               spesifikasi.
@@ -30,7 +32,7 @@ const Footer = () => {
         </div>
 
         {/* Garis Bawah & Hak Cipta */}
-        <div className='border-t border-secondary/30 mt-8 pt-6 text-center text-secondary/70 text-sm'>
+        <div className='border-t border-secondary/30 mt-8 pt-6 text-center text-secondarylp/70 text-sm'>
           © {new Date().getFullYear()} Carlos Tech. All rights reserved.
         </div>
       </div>

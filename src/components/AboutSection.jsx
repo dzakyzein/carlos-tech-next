@@ -8,7 +8,7 @@ export default function About() {
   };
 
   return (
-    <section className='bg-secondary py-20'>
+    <section className='bg-secondarylp py-20'>
       <div className='container mx-auto px-6 md:px-12 grid grid-cols-1 md:grid-cols-2 gap-12 items-center'>
         {/* Gambar */}
         <motion.div
@@ -32,19 +32,19 @@ export default function About() {
           viewport={{ once: true }}
           transition={{ duration: 0.8, delay: 0.3 }}
         >
-          <p className='text-lg text-primary/70 mb-2 uppercase tracking-wide underline'>
+          <p className='text-lg text-primarylp/70 mb-2 uppercase tracking-wide underline'>
             Presisi & Kecepatan untuk Kebutuhan Anda
           </p>
-          <h2 className='text-3xl md:text-4xl font-bold text-primary mb-4'>
+          <h2 className='text-3xl md:text-4xl font-bold text-primarylp mb-4'>
             Tentang Carlos Tech
           </h2>
-          <p className='text-primary/80 leading-relaxed mb-6'>
+          <p className='text-primarylp/80 leading-relaxed mb-6'>
             Carlos Tech adalah bengkel spesialis pembubutan mesin yang berlokasi
             di Solo. Dengan pengalaman bertahun-tahun, kami melayani pembuatan
             komponen presisi, perbaikan part mesin, dan custom parts sesuai
             kebutuhan industri maupun perorangan.
           </p>
-          <p className='text-primary/80 leading-relaxed mb-6'>
+          <p className='text-primarylp/80 leading-relaxed mb-6'>
             Didukung peralatan modern dan tenaga ahli berpengalaman, kami
             menjamin hasil kerja yang presisi, cepat, dan berkualitas tinggi.
           </p>
@@ -52,7 +52,7 @@ export default function About() {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={scrollToServices}
-            className='btn bg-primary text-secondary hover:bg-primary/90'
+            className='btn bg-primarylp text-secondarylp hover:bg-primarylp/90'
           >
             Lihat Layanan
           </motion.button>

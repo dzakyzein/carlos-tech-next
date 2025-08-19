@@ -5,7 +5,7 @@ import Image from 'next/image';
 
 export default function CTA() {
   return (
-    <section className='bg-secondary py-16 px-6 text-primary'>
+    <section className='bg-secondarylp py-16 px-6 text-primarylp'>
       <div className='max-w-6xl mx-auto grid md:grid-cols-2 gap-10 items-center'>
         {/* Kolom Kiri */}
         <div>
@@ -36,7 +36,7 @@ export default function CTA() {
           >
             <a
               href='/services'
-              className='bg-accent text-primary px-6 py-3 rounded-full font-semibold hover:opacity-90 transition'
+              className='bg-accentlp text-primarylp px-6 py-3 rounded-full font-semibold hover:opacity-90 transition'
             >
               Pesan Sekarang
             </a>
@@ -44,7 +44,7 @@ export default function CTA() {
               href='https://wa.me/6281226022666'
               target='_blank'
               rel='noopener noreferrer'
-              className='border border-accent text-accent px-6 py-3 rounded-full font-semibold hover:bg-accent hover:text-primary transition'
+              className='border border-accentlp text-accentlp px-6 py-3 rounded-full font-semibold hover:bg-accentlp hover:text-primarylp transition'
             >
               Hubungi via WhatsApp
             </a>

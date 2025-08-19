@@ -33,9 +33,9 @@ const products = [
 
 export default function PopularProducts() {
   return (
-    <section className='py-20 bg-secondary' id='popular-product'>
+    <section className='py-20 bg-secondarylp' id='popular-product'>
       <div className='container mx-auto px-6'>
-        <h2 className='text-3xl md:text-4xl font-bold text-primary text-center mb-12'>
+        <h2 className='text-3xl md:text-4xl font-bold text-primarylp text-center mb-12'>
           Produk Terpopuler
         </h2>
 
@@ -55,13 +55,13 @@ export default function PopularProducts() {
                 className='w-full h-48 object-cover'
               />
               <div className='p-6'>
-                <h3 className='text-xl font-semibold text-primary mb-2'>
+                <h3 className='text-xl font-semibold text-primarylp mb-2'>
                   {product.name}
                 </h3>
                 <p className='text-gray-600 text-sm mb-4'>
                   {product.description}
                 </p>
-                <button className='btn bg-primary text-white hover:bg-primary/90 w-full'>
+                <button className='btn bg-primarylp text-white hover:bg-primarylp/90 w-full'>
                   Pesan Sekarang
                 </button>
               </div>

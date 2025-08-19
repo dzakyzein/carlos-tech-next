@@ -22,7 +22,7 @@ const Navbar = () => {
   };
 
   return (
-    <div className='navbar bg-secondary text-primary px-4 md:px-8 shadow-md fixed w-full z-50'>
+    <div className='navbar bg-secondarylp text-primarylp px-4 md:px-8 shadow-md fixed w-full z-50'>
       {/* Start */}
       <div className='navbar-start'>
         <Link href='/' className='text-2xl font-bold'>
@@ -34,19 +34,19 @@ const Navbar = () => {
       <div className='navbar-center hidden md:flex space-x-8'>
         <Link
           href='/'
-          className='px-4 py-2 rounded hover:bg-accent hover:text-primary transition'
+          className='px-4 py-2 rounded hover:bg-accentlp hover:text-primarylp transition'
         >
           Home
         </Link>
         <Link
           href='/services'
-          className='px-4 py-2 rounded hover:bg-accent hover:text-primary transition'
+          className='px-4 py-2 rounded hover:bg-accentlp hover:text-primarylp transition'
         >
           Services
         </Link>
         <Link
           href='/aboutus'
-          className='px-4 py-2 rounded hover:bg-accent hover:text-primary transition'
+          className='px-4 py-2 rounded hover:bg-accentlp hover:text-primarylp transition'
         >
           About Us
         </Link>
@@ -63,13 +63,13 @@ const Navbar = () => {
               <div className='hidden md:flex space-x-4'>
                 <Link
                   href='/register'
-                  className='px-4 py-2 rounded hover:bg-accent hover:text-primary transition'
+                  className='px-4 py-2 rounded hover:bg-accentlp hover:text-primarylp transition'
                 >
                   Daftar
                 </Link>
                 <Link
                   href='/login'
-                  className='px-4 py-2 rounded hover:bg-accent hover:text-primary transition'
+                  className='px-4 py-2 rounded hover:bg-accentlp hover:text-primarylp transition'
                 >
                   Masuk
                 </Link>
@@ -95,7 +95,7 @@ const Navbar = () => {
                       animate='visible'
                       exit='exit'
                       variants={dropdownVariants}
-                      className='absolute right-0 mt-3 z-[1] p-2 shadow bg-secondary text-primary rounded-box w-48'
+                      className='absolute right-0 mt-3 z-[1] p-2 shadow bg-secondarylp text-primarylp rounded-box w-48'
                     >
                       <li>
                         <Link
@@ -130,12 +130,12 @@ const Navbar = () => {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
                     transition={{ duration: 0.2 }}
-                    className='absolute right-0 mt-2 w-48 bg-secondary text-primary rounded shadow-lg overflow-hidden z-50'
+                    className='absolute right-0 mt-2 w-48 bg-secondarylp text-primarylp rounded shadow-lg overflow-hidden z-50'
                   >
                     <li>
                       <Link
                         href='/'
-                        className='block px-4 py-2 hover:bg-primary hover:text-secondary'
+                        className='block px-4 py-2 hover:bg-primarylp hover:text-secondarylp'
                       >
                         Home
                       </Link>
@@ -143,7 +143,7 @@ const Navbar = () => {
                     <li>
                       <Link
                         href='/services'
-                        className='block px-4 py-2 hover:bg-primary hover:text-secondary'
+                        className='block px-4 py-2 hover:bg-primarylp hover:text-secondarylp'
                       >
                         Services
                       </Link>
@@ -151,7 +151,7 @@ const Navbar = () => {
                     <li>
                       <Link
                         href='/aboutus'
-                        className='block px-4 py-2 hover:bg-primary hover:text-secondary'
+                        className='block px-4 py-2 hover:bg-primarylp hover:text-secondarylp'
                       >
                         About Us
                       </Link>
@@ -162,7 +162,7 @@ const Navbar = () => {
                         <li>
                           <Link
                             href='/register'
-                            className='block px-4 py-2 hover:bg-primary hover:text-secondary'
+                            className='block px-4 py-2 hover:bg-primarylp hover:text-secondarylp'
                           >
                             Daftar
                           </Link>
@@ -170,7 +170,7 @@ const Navbar = () => {
                         <li>
                           <Link
                             href='/login'
-                            className='block px-4 py-2 hover:bg-primary hover:text-secondary'
+                            className='block px-4 py-2 hover:bg-primarylp hover:text-secondarylp'
                           >
                             Masuk
                           </Link>
@@ -181,7 +181,7 @@ const Navbar = () => {
                         <li>
                           <Link
                             href='/profile'
-                            className='block px-4 py-2 hover:bg-primary hover:text-secondary'
+                            className='block px-4 py-2 hover:bg-primarylp hover:text-secondarylp'
                           >
                             Profile
                           </Link>
@@ -189,7 +189,7 @@ const Navbar = () => {
                         <li>
                           <button
                             onClick={handleLogout}
-                            className='w-full text-left px-4 py-2 hover:bg-primary hover:text-secondary'
+                            className='w-full text-left px-4 py-2 hover:bg-primarylp hover:text-secondarylp'
                           >
                             Logout
                           </button>

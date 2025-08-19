@@ -27,20 +27,20 @@ export default function Workflow() {
   ];
 
   return (
-    <section className='py-20 bg-secondary'>
+    <section className='py-20 bg-secondarylp'>
       <div className='container mx-auto px-6 md:px-12'>
         <motion.h2
           initial={{ opacity: 0, y: -30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className='text-3xl md:text-4xl font-bold text-primary text-center mb-16'
+          className='text-3xl md:text-4xl font-bold text-primarylp text-center mb-16'
         >
           Alur Kerja Kami
         </motion.h2>
 
         <div className='relative'>
           {/* Garis tengah */}
-          <div className='hidden md:block absolute left-1/2 top-0 bottom-0 w-1 bg-primary/30 transform -translate-x-1/2'></div>
+          <div className='hidden md:block absolute left-1/2 top-0 bottom-0 w-1 bg-primarylp/30 transform -translate-x-1/2'></div>
 
           {steps.map((step, index) => (
             <motion.div
@@ -59,12 +59,14 @@ export default function Workflow() {
               {/* Konten step */}
               <div className='bg-white rounded-lg shadow-lg p-6 max-w-md mx-auto md:mx-0 relative z-10'>
                 <div className='text-4xl mb-2'>{step.icon}</div>
-                <h3 className='text-xl font-bold text-primary'>{step.title}</h3>
-                <p className='text-primary/80'>{step.desc}</p>
+                <h3 className='text-xl font-bold text-primarylp'>
+                  {step.title}
+                </h3>
+                <p className='text-primarylp/80'>{step.desc}</p>
               </div>
 
               {/* Titik di garis tengah */}
-              <div className='hidden md:block absolute left-1/2 w-6 h-6 bg-primary rounded-full transform -translate-x-1/2'></div>
+              <div className='hidden md:block absolute left-1/2 w-6 h-6 bg-primarylp rounded-full transform -translate-x-1/2'></div>
             </motion.div>
           ))}
         </div>
