@@ -2,26 +2,14 @@
 
 import * as React from 'react';
 import {
-  IconCamera,
-  IconChartBar,
+  IconCalendar,
   IconDashboard,
-  IconDatabase,
-  IconFileAi,
-  IconFileDescription,
-  IconFileWord,
-  IconFolder,
-  IconHelp,
-  IconInnerShadowTop,
-  IconListDetails,
-  IconReport,
-  IconSearch,
-  IconSettings,
+  IconTool,
   IconUsers,
+  IconSettings,
 } from '@tabler/icons-react';
 
-import { NavDocuments } from '@/components/dashboard/nav-documents';
 import { NavMain } from '@/components/dashboard/nav-main';
-import { NavSecondary } from '@/components/dashboard/nav-secondary';
 import { NavUser } from '@/components/dashboard/nav-user';
 import {
   Sidebar,
@@ -35,117 +23,38 @@ import {
 
 const data = {
   user: {
-    name: 'shadcn',
-    email: 'm@example.com',
-    avatar: '/avatars/shadcn.jpg',
+    name: 'Admin', // Ganti dengan nama admin
+    email: 'admin@example.com', // Ganti dengan email admin
+    avatar: '/avatars/placeholder.jpg', // Ganti dengan avatar admin
   },
+  // Item navigasi utama yang disesuaikan
   navMain: [
     {
       title: 'Dashboard',
-      url: '#',
+      url: '/dashboard',
       icon: IconDashboard,
     },
     {
-      title: 'Lifecycle',
-      url: '#',
-      icon: IconListDetails,
+      title: 'Reservasi',
+      url: '/dashboard/reservations',
+      icon: IconCalendar,
     },
     {
-      title: 'Analytics',
-      url: '#',
-      icon: IconChartBar,
-    },
-    {
-      title: 'Projects',
-      url: '#',
-      icon: IconFolder,
-    },
-    {
-      title: 'Team',
-      url: '#',
+      title: 'Pengguna',
+      url: '/dashboard/users',
       icon: IconUsers,
     },
-  ],
-  navClouds: [
     {
-      title: 'Capture',
-      icon: IconCamera,
-      isActive: true,
-      url: '#',
-      items: [
-        {
-          title: 'Active Proposals',
-          url: '#',
-        },
-        {
-          title: 'Archived',
-          url: '#',
-        },
-      ],
-    },
-    {
-      title: 'Proposal',
-      icon: IconFileDescription,
-      url: '#',
-      items: [
-        {
-          title: 'Active Proposals',
-          url: '#',
-        },
-        {
-          title: 'Archived',
-          url: '#',
-        },
-      ],
-    },
-    {
-      title: 'Prompts',
-      icon: IconFileAi,
-      url: '#',
-      items: [
-        {
-          title: 'Active Proposals',
-          url: '#',
-        },
-        {
-          title: 'Archived',
-          url: '#',
-        },
-      ],
+      title: 'Alat',
+      url: '/dashboard/tools',
+      icon: IconTool,
     },
   ],
   navSecondary: [
     {
-      title: 'Settings',
-      url: '#',
+      title: 'Pengaturan',
+      url: '/dashboard/settings',
       icon: IconSettings,
-    },
-    {
-      title: 'Get Help',
-      url: '#',
-      icon: IconHelp,
-    },
-    {
-      title: 'Search',
-      url: '#',
-      icon: IconSearch,
-    },
-  ],
-  documents: [
-    {
-      name: 'Data Library',
-      url: '#',
-      icon: IconDatabase,
-    },
-    {
-      name: 'Reports',
-      url: '#',
-      icon: IconReport,
-    },
-    {
-      name: 'Word Assistant',
-      url: '#',
-      icon: IconFileWord,
     },
   ],
 };
@@ -160,9 +69,9 @@ export function AppSidebar({ ...props }) {
               asChild
               className='data-[slot=sidebar-menu-button]:!p-1.5'
             >
-              <a href='#'>
-                <IconInnerShadowTop className='!size-5' />
-                <span className='text-base font-semibold'>Acme Inc.</span>
+              <a href='/dashboard'>
+                <IconTool className='!size-5' />
+                <span className='text-base font-semibold'>Admin Panel</span>
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -170,8 +79,8 @@ export function AppSidebar({ ...props }) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
-        <NavDocuments items={data.documents} />
-        <NavSecondary items={data.navSecondary} className='mt-auto' />
+        {/* NavDocuments dan NavClouds dihapus karena tidak relevan */}
+        <NavMain items={data.navSecondary} className='mt-auto' />
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={data.user} />
