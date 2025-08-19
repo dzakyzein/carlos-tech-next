@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
-import prisma from '@/lib/prisma'; // pastikan kita sudah bikin prisma client
+import prisma from '@/lib/prisma';
 
 export async function POST(req) {
   try {
@@ -28,6 +28,7 @@ export async function POST(req) {
         name,
         email,
         password: hashedPassword,
+        role: 'customer', // default
       },
     });
 
@@ -36,6 +37,7 @@ export async function POST(req) {
       { status: 201 }
     );
   } catch (error) {
+    console.error(error);
     return NextResponse.json({ message: 'Server error' }, { status: 500 });
   }
 }
