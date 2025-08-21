@@ -39,10 +39,10 @@ const Navbar = () => {
           Home
         </Link>
         <Link
-          href='/services'
+          href='/reservation'
           className='px-4 py-2 rounded hover:bg-accentlp hover:text-primarylp transition'
         >
-          Services
+          Reservation
         </Link>
         <Link
           href='/aboutus'
@@ -142,10 +142,10 @@ const Navbar = () => {
                     </li>
                     <li>
                       <Link
-                        href='/services'
+                        href='/reservation'
                         className='block px-4 py-2 hover:bg-primarylp hover:text-secondarylp'
                       >
-                        Services
+                        Reservation
                       </Link>
                     </li>
                     <li>
