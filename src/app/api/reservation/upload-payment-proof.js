@@ -57,7 +57,7 @@ export default async function handler(req, res) {
     res.status(200).json(updatedReservation);
   } catch (error) {
     console.error(
-      'Error in API route /api/reservations/upload-payment-proof:',
+      'Error in API route /api/reservation/upload-payment-proof:',
       error
     );
     res.status(500).json({ message: 'Gagal mengunggah bukti pembayaran.' });

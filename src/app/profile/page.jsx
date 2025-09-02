@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { format } from 'date-fns';
 import { id } from 'date-fns/locale';
+import { UserIcon } from 'lucide-react';
 
 // Fungsi bantuan untuk men-format mata uang
 const formatCurrency = (amount) => {
@@ -39,7 +40,7 @@ const UserProfilePage = () => {
         setIsReservationsLoading(true);
         try {
           // Ganti URL ini dengan endpoint API Anda yang sebenarnya
-          const response = await fetch('/api/reservations/user');
+          const response = await fetch('/api/reservation/user');
           if (!response.ok) {
             throw new Error('Gagal mengambil data pesanan.');
           }
@@ -74,7 +75,7 @@ const UserProfilePage = () => {
 
     try {
       // Ganti URL ini dengan endpoint API Anda untuk mengunggah bukti pembayaran
-      const response = await fetch('/api/reservations/upload-payment-proof', {
+      const response = await fetch('/api/reservation/upload-payment-proof', {
         method: 'POST',
         body: formData,
       });
@@ -118,7 +119,7 @@ const UserProfilePage = () => {
             </h1>
 
             <div className='mb-6'>
-              <img
+              <UserIcon
                 src={session.user.image || '/profile.jpg'}
                 alt='Profil Pengguna'
                 className='w-32 h-32 rounded-full mx-auto border-4 border-gray-300 object-cover'

@@ -1,4 +1,3 @@
-// app/dashboard/reservations/page.jsx
 import { PrismaClient } from '@prisma/client';
 import ReservationsClient from './ReservationsClient';
 

@@ -1,4 +1,3 @@
-// app/dashboard/reservations/ReservationsClient.jsx
 'use client';
 
 import * as React from 'react';
@@ -42,7 +41,7 @@ export default function ReservationsClient({ reservations }) {
       <h1 className='text-3xl font-bold mb-6'>Daftar Reservasi</h1>
       <div className='flex justify-end mb-4'>
         <Button asChild>
-          <Link href='/dashboard/reservations/new'>Tambah Reservasi Baru</Link>
+          <Link href='/dashboard/reservation/new'>Tambah Reservasi Baru</Link>
         </Button>
       </div>
       <div className='rounded-md border'>
