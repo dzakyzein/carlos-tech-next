@@ -16,89 +16,126 @@ const formatCurrency = (amount) => {
   }).format(amount);
 };
 
-// Fungsi utama komponen UserProfilePage
+const ITEMS_PER_PAGE = 5; // jumlah pesanan per halaman
+
 const UserProfilePage = () => {
   const { data: session, status } = useSession();
   const router = useRouter();
 
-  // State untuk menyimpan data pesanan dan status loading
   const [reservations, setReservations] = useState([]);
   const [isReservationsLoading, setIsReservationsLoading] = useState(true);
   const [uploadingStatus, setUploadingStatus] = useState({});
 
-  // Proteksi rute: Redirect jika pengguna belum login
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState(null);
+
+  // pagination
+  const [currentPage, setCurrentPage] = useState(1);
+
+  // Proteksi rute
   useEffect(() => {
     if (status !== 'loading' && !session) {
       router.push('/login');
     }
   }, [session, status, router]);
 
-  // Efek untuk mengambil data pesanan setelah sesi terverifikasi
   useEffect(() => {
     const fetchReservations = async () => {
       if (session) {
         setIsReservationsLoading(true);
         try {
-          // Ganti URL ini dengan endpoint API Anda yang sebenarnya
           const response = await fetch('/api/reservation/user');
-          if (!response.ok) {
-            throw new Error('Gagal mengambil data pesanan.');
-          }
+          if (!response.ok) throw new Error('Gagal mengambil data pesanan.');
           const data = await response.json();
           setReservations(data);
         } catch (error) {
           console.error('Error fetching reservations:', error);
-          // Anda bisa menambahkan state error untuk menampilkan pesan ke pengguna
         } finally {
           setIsReservationsLoading(false);
         }
       }
     };
-
-    if (session) {
-      fetchReservations();
-    }
+    if (session) fetchReservations();
   }, [session]);
 
-  // Fungsi untuk menangani unggahan bukti pembayaran
+  // Upload pertama
   const handlePaymentProofUpload = async (reservationId, file) => {
-    if (!file) {
-      alert('Silakan pilih file untuk diunggah.');
-      return;
-    }
-
+    if (!file) return;
     setUploadingStatus((prev) => ({ ...prev, [reservationId]: 'uploading' }));
 
-    const formData = new FormData();
-    formData.append('paymentProof', file);
-    formData.append('reservationId', reservationId);
-
     try {
-      // Ganti URL ini dengan endpoint API Anda untuk mengunggah bukti pembayaran
-      const response = await fetch('/api/reservation/upload-payment-proof', {
+      // STEP 1: Upload file
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const res = await fetch('/api/reservation/upload-payment-proof', {
         method: 'POST',
         body: formData,
       });
 
-      if (!response.ok) {
-        throw new Error('Gagal mengunggah bukti pembayaran.');
-      }
+      const data = await res.json();
+      const fileUrl =
+        typeof data.fileUrl === 'string' ? data.fileUrl : data.fileUrl.url;
 
-      const updatedReservation = await response.json();
+      // STEP 2: Simpan ke DB
+      await fetch('/api/reservation/update-payment-proof', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          reservationId,
+          fileUrl,
+        }),
+      });
 
-      // Perbarui state lokal dengan data terbaru dari server
-      setReservations((prev) =>
-        prev.map((res) => (res.id === reservationId ? updatedReservation : res))
-      );
       setUploadingStatus((prev) => ({ ...prev, [reservationId]: 'success' }));
-    } catch (error) {
-      console.error('Error uploading payment proof:', error);
+    } catch (err) {
+      console.error('Error upload:', err);
       setUploadingStatus((prev) => ({ ...prev, [reservationId]: 'failed' }));
-      alert('Gagal mengunggah bukti pembayaran. Silakan coba lagi.');
     }
   };
 
-  // Tampilkan pesan loading saat NextAuth.js sedang memverifikasi sesi
+  // Reupload
+  const handlePaymentProofReupload = async (reservationId, file) => {
+    if (!file) return;
+    setUploadingStatus((prev) => ({ ...prev, [reservationId]: 'uploading' }));
+
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const res = await fetch('/api/reservation/upload-payment-proof', {
+        method: 'POST', // tetap pakai POST untuk upload file
+        body: formData,
+      });
+
+      const data = await res.json();
+      const fileUrl =
+        typeof data.fileUrl === 'string' ? data.fileUrl : data.fileUrl.url;
+
+      await fetch('/api/reservation/update-payment-proof', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          reservationId,
+          fileUrl,
+        }),
+      });
+
+      setUploadingStatus((prev) => ({ ...prev, [reservationId]: 'success' }));
+    } catch (err) {
+      console.error('Error reupload:', err);
+      setUploadingStatus((prev) => ({ ...prev, [reservationId]: 'failed' }));
+    }
+  };
+
+  // Data dengan pagination
+  const totalPages = Math.ceil(reservations.length / ITEMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const currentReservations = reservations.slice(
+    startIndex,
+    startIndex + ITEMS_PER_PAGE
+  );
+
   if (status === 'loading') {
     return (
       <div className='flex items-center justify-center min-h-screen bg-gray-100'>
@@ -107,7 +144,6 @@ const UserProfilePage = () => {
     );
   }
 
-  // Tampilkan halaman profil jika sesi sudah ada
   if (session) {
     return (
       <div className='min-h-screen bg-gray-100 p-4 pt-20'>
@@ -118,12 +154,10 @@ const UserProfilePage = () => {
               Profil Pengguna
             </h1>
 
-            <div className='mb-6'>
-              <UserIcon
-                src={session.user.image || '/profile.jpg'}
-                alt='Profil Pengguna'
-                className='w-32 h-32 rounded-full mx-auto border-4 border-gray-300 object-cover'
-              />
+            <div className='mb-6 flex justify-center'>
+              <div className='w-32 h-32 rounded-full border-4 border-gray-300 bg-gray-200 flex items-center justify-center'>
+                <UserIcon className='w-16 h-16 text-gray-600' />
+              </div>
             </div>
 
             <div className='space-y-4 text-left inline-block'>
@@ -133,14 +167,12 @@ const UserProfilePage = () => {
                   {session.user.name}
                 </p>
               </div>
-
               <div className='border-b pb-2'>
                 <p className='text-gray-500 text-sm'>Email</p>
                 <p className='font-semibold text-gray-700'>
                   {session.user.email}
                 </p>
               </div>
-
               <div className='border-b pb-2'>
                 <p className='text-gray-500 text-sm'>Peran (Role)</p>
                 <p className='font-semibold text-gray-700'>
@@ -150,7 +182,7 @@ const UserProfilePage = () => {
             </div>
           </div>
 
-          {/* Bagian Daftar Pesanan */}
+          {/* Daftar Pesanan */}
           <div className='bg-white rounded-lg shadow-lg p-8'>
             <h2 className='text-2xl font-bold text-gray-800 mb-6'>
               Daftar Pesanan Saya
@@ -163,77 +195,139 @@ const UserProfilePage = () => {
                 Anda belum memiliki pesanan.
               </p>
             ) : (
-              <div className='space-y-6'>
-                {reservations.map((res) => (
-                  <div key={res.id} className='border rounded-lg p-4 shadow-sm'>
-                    <div className='flex flex-col md:flex-row md:items-center justify-between'>
-                      <div>
-                        <p className='text-lg font-bold text-gray-800'>
-                          {res.name}
-                        </p>
-                        <p className='text-sm text-gray-500'>
-                          Pesanan pada:{' '}
-                          {format(new Date(res.createdAt), 'dd MMMM yyyy', {
-                            locale: id,
-                          })}
-                        </p>
-                        <p className='text-sm text-gray-500'>
-                          Total Harga: {formatCurrency(res.price)}
-                        </p>
-                      </div>
-
-                      <div className='mt-4 md:mt-0 md:text-right'>
-                        <p
-                          className={`font-semibold text-sm ${
-                            res.status === 'LUNAS'
-                              ? 'text-green-600'
-                              : 'text-red-600'
-                          }`}
-                        >
-                          Status: {res.status}
-                        </p>
-                        <p className='text-sm text-gray-600'>
-                          Progres: {res.progress}
-                        </p>
-
-                        {/* Tombol Unggah hanya jika status belum lunas */}
-                        {res.status === 'BELUM_LUNAS' && (
-                          <div className='mt-2'>
-                            {uploadingStatus[res.id] === 'uploading' ? (
-                              <p className='text-sm text-blue-500 animate-pulse'>
-                                Mengunggah...
-                              </p>
-                            ) : (
-                              <label
-                                htmlFor={`upload-proof-${res.id}`}
-                                className='inline-block bg-blue-500 text-white px-4 py-2 rounded-full cursor-pointer hover:bg-blue-600 transition'
-                              >
-                                Unggah Bukti Bayar
-                                <input
-                                  id={`upload-proof-${res.id}`}
-                                  type='file'
-                                  className='hidden'
-                                  onChange={(e) =>
-                                    handlePaymentProofUpload(
-                                      res.id,
-                                      e.target.files[0]
-                                    )
-                                  }
-                                />
-                              </label>
-                            )}
-                          </div>
-                        )}
-                        {uploadingStatus[res.id] === 'success' && (
-                          <p className='text-sm text-green-500 mt-2'>
-                            Berhasil diunggah! Menunggu verifikasi.
+              <>
+                <div className='space-y-6'>
+                  {currentReservations.map((res) => (
+                    <div
+                      key={res.id}
+                      className='border rounded-lg p-4 shadow-sm'
+                    >
+                      <div className='flex flex-col md:flex-row md:items-center justify-between'>
+                        <div>
+                          <p className='text-lg font-bold text-gray-800'>
+                            {res.name}
                           </p>
-                        )}
+                          <p className='text-sm text-gray-500'>
+                            Pesanan pada:{' '}
+                            {format(new Date(res.createdAt), 'dd MMMM yyyy', {
+                              locale: id,
+                            })}
+                          </p>
+                          <p className='text-sm text-gray-500'>
+                            Total Harga: {formatCurrency(res.price)}
+                          </p>
+                        </div>
+
+                        <div className='mt-4 md:mt-0 md:text-right'>
+                          <p
+                            className={`font-semibold text-sm ${
+                              res.status === 'LUNAS'
+                                ? 'text-green-600'
+                                : 'text-red-600'
+                            }`}
+                          >
+                            Status: {res.status}
+                          </p>
+                          <p className='text-sm text-gray-600'>
+                            Progres: {res.progress}
+                          </p>
+
+                          {res.status === 'BELUM_LUNAS' && (
+                            <div className='mt-2'>
+                              {uploadingStatus[res.id] === 'uploading' ? (
+                                <p className='text-sm text-blue-500 animate-pulse'>
+                                  Mengunggah...
+                                </p>
+                              ) : (
+                                <div>
+                                  {!res.paymentProof ? (
+                                    // Jika belum ada bukti pembayaran
+                                    <>
+                                      <input
+                                        type='file'
+                                        accept='image/*'
+                                        id={`upload-proof-${res.id}`}
+                                        className='hidden'
+                                        onChange={(e) =>
+                                          handlePaymentProofUpload(
+                                            res.id,
+                                            e.target.files[0]
+                                          )
+                                        }
+                                      />
+
+                                      <label
+                                        htmlFor={`upload-proof-${res.id}`}
+                                        className='inline-block bg-blue-500 text-white px-4 py-2 rounded-md cursor-pointer hover:bg-blue-600 transition'
+                                      >
+                                        Upload Bukti
+                                      </label>
+                                    </>
+                                  ) : (
+                                    // Jika sudah ada bukti pembayaran
+                                    <div className='space-y-2'>
+                                      <img
+                                        src={res.paymentProof}
+                                        alt='Bukti Pembayaran'
+                                        className='w-40 h-40 object-cover rounded-md border'
+                                      />
+                                      <input
+                                        type='file'
+                                        accept='image/*'
+                                        id={`reupload-proof-${res.id}`}
+                                        className='hidden'
+                                        onChange={(e) =>
+                                          handlePaymentProofReupload(
+                                            res.id,
+                                            e.target.files[0]
+                                          )
+                                        }
+                                      />
+
+                                      <label
+                                        htmlFor={`reupload-proof-${res.id}`}
+                                        className='inline-block bg-yellow-500 text-white px-4 py-2 rounded-md cursor-pointer hover:bg-yellow-600 transition'
+                                      >
+                                        Reupload
+                                      </label>
+                                    </div>
+                                  )}
+                                </div>
+                              )}
+                            </div>
+                          )}
+                          {uploadingStatus[res.id] === 'success' && (
+                            <p className='text-sm text-green-500 mt-2'>
+                              Berhasil diunggah! Menunggu verifikasi.
+                            </p>
+                          )}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+
+                {/* Pagination Controls */}
+                <div className='flex justify-center items-center mt-6 gap-2'>
+                  <button
+                    disabled={currentPage === 1}
+                    onClick={() => setCurrentPage((p) => p - 1)}
+                    className='px-4 py-2 bg-gray-200 rounded disabled:opacity-50'
+                  >
+                    Prev
+                  </button>
+                  <span className='px-3'>
+                    Halaman {currentPage} dari {totalPages}
+                  </span>
+                  <button
+                    disabled={currentPage === totalPages}
+                    onClick={() => setCurrentPage((p) => p + 1)}
+                    className='px-4 py-2 bg-gray-200 rounded disabled:opacity-50'
+                  >
+                    Next
+                  </button>
+                </div>
+              </>
             )}
           </div>
         </div>
@@ -241,7 +335,6 @@ const UserProfilePage = () => {
     );
   }
 
-  // Jika tidak ada sesi dan tidak dalam status loading, komponen tidak akan menampilkan apa-apa
   return null;
 };
 
