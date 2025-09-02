@@ -4,6 +4,7 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import prisma from '@/lib/prisma';
 import { z } from 'zod';
+import { authOptions } from '../auth/[...nextauth]/route';
 
 const reservationSchema = z.object({
   name: z.string().min(2),
@@ -20,7 +21,7 @@ const reservationSchema = z.object({
 });
 
 export async function POST(request) {
-  const session = await getServerSession(request);
+  const session = await getServerSession(authOptions);
 
   if (!session) {
     return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
@@ -34,6 +35,7 @@ export async function POST(request) {
       data: {
         ...validatedData,
         userId: session.user.id,
+        price: 0,
       },
     });
 
@@ -48,7 +50,11 @@ export async function POST(request) {
 
     console.error('Reservation creation failed:', error);
     return NextResponse.json(
-      { message: 'Something went wrong', error: error.message },
+      {
+        message: 'Something went wrong',
+        error: error.message,
+        stack: error.stack,
+      },
       { status: 500 }
     );
   }

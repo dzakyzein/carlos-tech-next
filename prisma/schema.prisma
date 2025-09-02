@@ -31,7 +31,7 @@ model Reservation {
   userId       Int
   user         User      @relation(fields: [userId], references: [id])
   status       PaymentStatus @default(BELUM_LUNAS)
-  price        Float
+  price        Float     @default(0)
   progress     Progress  @default(P0)
   paymentProof String?
   paidAt       DateTime?
