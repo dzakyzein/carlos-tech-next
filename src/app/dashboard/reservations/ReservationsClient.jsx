@@ -79,11 +79,6 @@ export default function ReservationsClient({ reservations }) {
   return (
     <div className='container p-5 py-10'>
       <h1 className='text-3xl font-bold mb-6'>Daftar Reservasi</h1>
-      <div className='flex justify-end mb-4'>
-        <Button asChild>
-          <Link href='/dashboard/reservation/new'>Tambah Reservasi Baru</Link>
-        </Button>
-      </div>
       <div className='rounded-md border'>
         <Table>
           <TableHeader>
