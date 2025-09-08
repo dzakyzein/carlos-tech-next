@@ -21,6 +21,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
+import { toast } from 'sonner';
 
 export default function ReservationsClient({ reservations }) {
   const [selectedReservation, setSelectedReservation] = React.useState(null);
@@ -38,13 +39,30 @@ export default function ReservationsClient({ reservations }) {
     );
 
     try {
-      await fetch(`/api/reservation/${reservation.id}`, {
+      const res = await fetch(`/api/reservation/${reservation.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: newStatus }),
       });
+      if (!res.ok) throw new Error('Gagal update');
+
+      toast.success(
+        `Status pembayaran berhasil diubah menjadi ${newStatus.replace(
+          '_',
+          ' '
+        )}`
+      );
     } catch (error) {
       console.error('Gagal update status:', error);
+
+      // Balikin lagi status kalau gagal
+      setReservationsData((prev) =>
+        prev.map((r) =>
+          r.id === reservation.id ? { ...r, status: reservation.status } : r
+        )
+      );
+
+      toast.error('Gagal mengubah status pembayaran');
     }
   };
 
