@@ -20,6 +20,39 @@ const reservationSchema = z.object({
   note: z.string().optional(),
 });
 
+export async function GET(req) {
+  try {
+    const { searchParams } = new URL(req.url);
+    const page = parseInt(searchParams.get('page') || '1', 10);
+    const limit = parseInt(searchParams.get('limit') || '10', 10);
+
+    const [reservations, total] = await Promise.all([
+      prisma.reservation.findMany({
+        skip: (page - 1) * limit,
+        take: limit,
+        orderBy: { createdAt: 'desc' },
+      }),
+      prisma.reservation.count(),
+    ]);
+
+    return NextResponse.json({
+      data: reservations,
+      pagination: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+      },
+    });
+  } catch (error) {
+    console.error('Fetch reservations failed:', error);
+    return NextResponse.json(
+      { message: 'Failed to fetch reservations', error: error.message },
+      { status: 500 }
+    );
+  }
+}
+
 export async function POST(request) {
   const session = await getServerSession(authOptions);
 

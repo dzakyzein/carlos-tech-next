@@ -27,6 +27,28 @@ export default function ReservationsClient({ reservations }) {
   const [selectedReservation, setSelectedReservation] = React.useState(null);
   const [isModalOpen, setIsModalOpen] = React.useState(false);
   const [reservationsData, setReservationsData] = React.useState(reservations);
+  const [pagination, setPagination] = React.useState({
+    page: 1,
+    limit: 8,
+    totalPages: 1,
+  });
+
+  const fetchReservations = async (page = 1) => {
+    try {
+      const res = await fetch(`/api/reservation?page=${page}&limit=8`);
+      if (!res.ok) throw new Error('Gagal fetch data');
+      const result = await res.json();
+      setReservationsData(result.data);
+      setPagination(result.pagination);
+    } catch (error) {
+      console.error('Gagal fetch:', error);
+      toast.error('Gagal memuat data reservasi');
+    }
+  };
+
+  React.useEffect(() => {
+    fetchReservations(pagination.page);
+  }, [pagination.page]);
 
   const handleToggleStatus = async (reservation) => {
     const newStatus = reservation.status === 'LUNAS' ? 'BELUM_LUNAS' : 'LUNAS';
@@ -132,6 +154,24 @@ export default function ReservationsClient({ reservations }) {
             ))}
           </TableBody>
         </Table>
+
+        <div className='flex justify-evenly items-center mt-4'>
+          <Button
+            disabled={pagination.page === 1}
+            onClick={() => setPagination((p) => ({ ...p, page: p.page - 1 }))}
+          >
+            Prev
+          </Button>
+          <span>
+            Page {pagination.page} of {pagination.totalPages}
+          </span>
+          <Button
+            disabled={pagination.page === pagination.totalPages}
+            onClick={() => setPagination((p) => ({ ...p, page: p.page + 1 }))}
+          >
+            Next
+          </Button>
+        </div>
       </div>
 
       {/* Modal Popup Detail Reservasi */}
