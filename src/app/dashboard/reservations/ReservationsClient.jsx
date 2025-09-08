@@ -25,6 +25,28 @@ import { Label } from '@/components/ui/label';
 export default function ReservationsClient({ reservations }) {
   const [selectedReservation, setSelectedReservation] = React.useState(null);
   const [isModalOpen, setIsModalOpen] = React.useState(false);
+  const [reservationsData, setReservationsData] = React.useState(reservations);
+
+  const handleToggleStatus = async (reservation) => {
+    const newStatus = reservation.status === 'LUNAS' ? 'BELUM_LUNAS' : 'LUNAS';
+
+    // Optimistic UI update
+    setReservationsData((prev) =>
+      prev.map((r) =>
+        r.id === reservation.id ? { ...r, status: newStatus } : r
+      )
+    );
+
+    try {
+      await fetch(`/api/reservation/${reservation.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: newStatus }),
+      });
+    } catch (error) {
+      console.error('Gagal update status:', error);
+    }
+  };
 
   const handleOpenModal = (reservation) => {
     setSelectedReservation(reservation);
@@ -59,20 +81,22 @@ export default function ReservationsClient({ reservations }) {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {reservations.map((reservation) => (
+            {reservationsData.map((reservation) => (
               <TableRow key={reservation.id}>
                 <TableCell className='font-medium'>{reservation.id}</TableCell>
                 <TableCell>{reservation.name}</TableCell>
                 <TableCell>{reservation.type}</TableCell>
                 <TableCell>
                   <Badge
+                    onClick={() => handleToggleStatus(reservation)}
+                    className='cursor-pointer'
                     variant={
                       reservation.status === 'LUNAS'
                         ? 'secondary'
                         : 'destructive'
                     }
                   >
-                    {reservation.status}
+                    {reservation.status.replace('_', ' ')}
                   </Badge>
                 </TableCell>
                 <TableCell>
