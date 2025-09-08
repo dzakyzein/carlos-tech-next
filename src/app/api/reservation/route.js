@@ -24,7 +24,7 @@ export async function GET(req) {
   try {
     const { searchParams } = new URL(req.url);
     const page = parseInt(searchParams.get('page') || '1', 10);
-    const limit = parseInt(searchParams.get('limit') || '10', 10);
+    const limit = parseInt(searchParams.get('limit') || '8', 10);
 
     const [reservations, total] = await Promise.all([
       prisma.reservation.findMany({

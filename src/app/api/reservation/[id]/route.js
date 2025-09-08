@@ -3,12 +3,12 @@ import prisma from '@/lib/prisma';
 
 export async function PUT(req, context) {
   const { id } = await context.params;
-  const { status } = await req.json();
+  const { status, progress } = await req.json();
 
   try {
     const updatedReservation = await prisma.reservation.update({
       where: { id: Number(id) },
-      data: { status },
+      data: { ...(status && { status }), ...(progress && { progress }) },
     });
 
     return NextResponse.json(updatedReservation);

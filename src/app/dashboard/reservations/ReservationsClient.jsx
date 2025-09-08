@@ -20,35 +20,51 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
+import { useRouter } from 'next/router';
 
-export default function ReservationsClient({ reservations }) {
+export default function ReservationsClient({ reservations, pagination }) {
   const [selectedReservation, setSelectedReservation] = React.useState(null);
   const [isModalOpen, setIsModalOpen] = React.useState(false);
-  const [reservationsData, setReservationsData] = React.useState(reservations);
-  const [pagination, setPagination] = React.useState({
-    page: 1,
-    limit: 8,
-    totalPages: 1,
-  });
+  const reservationsData = reservations;
 
-  const fetchReservations = async (page = 1) => {
+  const handleUpdateProgress = async (reservation, newProgress) => {
+    // Optimistic UI
+    setReservationsData((prev) =>
+      prev.map((r) =>
+        r.id === reservation.id ? { ...r, progress: newProgress } : r
+      )
+    );
+
     try {
-      const res = await fetch(`/api/reservation?page=${page}&limit=8`);
-      if (!res.ok) throw new Error('Gagal fetch data');
-      const result = await res.json();
-      setReservationsData(result.data);
-      setPagination(result.pagination);
+      const res = await fetch(`/api/reservation/${reservation.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ progress: newProgress }),
+      });
+      if (!res.ok) throw new Error('Gagal update progress');
+
+      toast.success(`Progress berhasil diubah ke ${newProgress}`);
     } catch (error) {
-      console.error('Gagal fetch:', error);
-      toast.error('Gagal memuat data reservasi');
+      console.error('Gagal update progress:', error);
+
+      // rollback jika gagal
+      setReservationsData((prev) =>
+        prev.map((r) =>
+          r.id === reservation.id ? { ...r, progress: reservation.progress } : r
+        )
+      );
+
+      toast.error('Gagal mengubah progress');
     }
   };
-
-  React.useEffect(() => {
-    fetchReservations(pagination.page);
-  }, [pagination.page]);
 
   const handleToggleStatus = async (reservation) => {
     const newStatus = reservation.status === 'LUNAS' ? 'BELUM_LUNAS' : 'LUNAS';
@@ -135,7 +151,23 @@ export default function ReservationsClient({ reservations }) {
                   </Badge>
                 </TableCell>
                 <TableCell>
-                  <Badge variant='outline'>{reservation.progress}</Badge>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant='outline' size='sm'>
+                        {reservation.progress}
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                      {['P25', 'P50', 'P75', 'P100'].map((p) => (
+                        <DropdownMenuItem
+                          key={p}
+                          onClick={() => handleUpdateProgress(reservation, p)}
+                        >
+                          {p}
+                        </DropdownMenuItem>
+                      ))}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </TableCell>
                 <TableCell>{reservation.amount}</TableCell>
                 <TableCell>
@@ -156,20 +188,16 @@ export default function ReservationsClient({ reservations }) {
         </Table>
 
         <div className='flex justify-evenly items-center mt-4'>
-          <Button
-            disabled={pagination.page === 1}
-            onClick={() => setPagination((p) => ({ ...p, page: p.page - 1 }))}
-          >
-            Prev
+          <Button disabled={pagination.page === 1} asChild>
+            <Link href={`?page=${pagination.page - 1}`}>Prev</Link>
           </Button>
+
           <span>
             Page {pagination.page} of {pagination.totalPages}
           </span>
-          <Button
-            disabled={pagination.page === pagination.totalPages}
-            onClick={() => setPagination((p) => ({ ...p, page: p.page + 1 }))}
-          >
-            Next
+
+          <Button disabled={pagination.page === pagination.totalPages} asChild>
+            <Link href={`?page=${pagination.page + 1}`}>Next</Link>
           </Button>
         </div>
       </div>
