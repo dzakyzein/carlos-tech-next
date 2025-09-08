@@ -3,6 +3,8 @@
 import * as React from 'react';
 import Link from 'next/link';
 import { format } from 'date-fns';
+import { toast } from 'sonner';
+
 import {
   Table,
   TableBody,
@@ -27,16 +29,70 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Label } from '@/components/ui/label';
-import { toast } from 'sonner';
-import { useRouter } from 'next/router';
 
-export default function ReservationsClient({ reservations, pagination }) {
+export default function ReservationsClient() {
   const [selectedReservation, setSelectedReservation] = React.useState(null);
   const [isModalOpen, setIsModalOpen] = React.useState(false);
-  const reservationsData = reservations;
+  const [reservationsData, setReservationsData] = React.useState([]);
+  const [pagination, setPagination] = React.useState({
+    page: 1,
+    limit: 8,
+    totalPages: 1,
+    total: 0,
+  });
 
+  // 🔹 Fetch data ke API
+  const fetchReservations = async (page = 1) => {
+    try {
+      const res = await fetch(`/api/reservation?page=${page}&limit=8`);
+      if (!res.ok) throw new Error('Gagal fetch data');
+
+      const result = await res.json();
+      setReservationsData(result.data);
+      setPagination(result.pagination);
+    } catch (error) {
+      console.error('Gagal fetch:', error);
+      toast.error('Gagal memuat data reservasi');
+    }
+  };
+
+  React.useEffect(() => {
+    fetchReservations(pagination.page);
+  }, [pagination.page]);
+
+  // 🔹 Toggle Status
+  const handleToggleStatus = async (reservation) => {
+    const newStatus = reservation.status === 'LUNAS' ? 'BELUM_LUNAS' : 'LUNAS';
+
+    // Optimistic
+    setReservationsData((prev) =>
+      prev.map((r) =>
+        r.id === reservation.id ? { ...r, status: newStatus } : r
+      )
+    );
+
+    try {
+      const res = await fetch(`/api/reservation/${reservation.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: newStatus }),
+      });
+      if (!res.ok) throw new Error('Gagal update');
+
+      toast.success(`Status berhasil diubah ke ${newStatus}`);
+    } catch (error) {
+      // rollback
+      setReservationsData((prev) =>
+        prev.map((r) =>
+          r.id === reservation.id ? { ...r, status: reservation.status } : r
+        )
+      );
+      toast.error('Gagal mengubah status pembayaran');
+    }
+  };
+
+  // 🔹 Update Progress
   const handleUpdateProgress = async (reservation, newProgress) => {
-    // Optimistic UI
     setReservationsData((prev) =>
       prev.map((r) =>
         r.id === reservation.id ? { ...r, progress: newProgress } : r
@@ -53,62 +109,20 @@ export default function ReservationsClient({ reservations, pagination }) {
 
       toast.success(`Progress berhasil diubah ke ${newProgress}`);
     } catch (error) {
-      console.error('Gagal update progress:', error);
-
-      // rollback jika gagal
       setReservationsData((prev) =>
         prev.map((r) =>
           r.id === reservation.id ? { ...r, progress: reservation.progress } : r
         )
       );
-
       toast.error('Gagal mengubah progress');
     }
   };
 
-  const handleToggleStatus = async (reservation) => {
-    const newStatus = reservation.status === 'LUNAS' ? 'BELUM_LUNAS' : 'LUNAS';
-
-    // Optimistic UI update
-    setReservationsData((prev) =>
-      prev.map((r) =>
-        r.id === reservation.id ? { ...r, status: newStatus } : r
-      )
-    );
-
-    try {
-      const res = await fetch(`/api/reservation/${reservation.id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status: newStatus }),
-      });
-      if (!res.ok) throw new Error('Gagal update');
-
-      toast.success(
-        `Status pembayaran berhasil diubah menjadi ${newStatus.replace(
-          '_',
-          ' '
-        )}`
-      );
-    } catch (error) {
-      console.error('Gagal update status:', error);
-
-      // Balikin lagi status kalau gagal
-      setReservationsData((prev) =>
-        prev.map((r) =>
-          r.id === reservation.id ? { ...r, status: reservation.status } : r
-        )
-      );
-
-      toast.error('Gagal mengubah status pembayaran');
-    }
-  };
-
+  // 🔹 Modal
   const handleOpenModal = (reservation) => {
     setSelectedReservation(reservation);
     setIsModalOpen(true);
   };
-
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setSelectedReservation(null);
@@ -134,7 +148,7 @@ export default function ReservationsClient({ reservations, pagination }) {
           <TableBody>
             {reservationsData.map((reservation) => (
               <TableRow key={reservation.id}>
-                <TableCell className='font-medium'>{reservation.id}</TableCell>
+                <TableCell>{reservation.id}</TableCell>
                 <TableCell>{reservation.name}</TableCell>
                 <TableCell>{reservation.type}</TableCell>
                 <TableCell>
@@ -187,22 +201,34 @@ export default function ReservationsClient({ reservations, pagination }) {
           </TableBody>
         </Table>
 
+        {/* Pagination */}
         <div className='flex justify-evenly items-center mt-4'>
-          <Button disabled={pagination.page === 1} asChild>
-            <Link href={`?page=${pagination.page - 1}`}>Prev</Link>
+          <Button
+            disabled={pagination.page === 1}
+            onClick={() =>
+              setPagination((p) => ({ ...p, page: Math.max(1, p.page - 1) }))
+            }
+          >
+            Prev
           </Button>
-
           <span>
             Page {pagination.page} of {pagination.totalPages}
           </span>
-
-          <Button disabled={pagination.page === pagination.totalPages} asChild>
-            <Link href={`?page=${pagination.page + 1}`}>Next</Link>
+          <Button
+            disabled={pagination.page === pagination.totalPages}
+            onClick={() =>
+              setPagination((p) => ({
+                ...p,
+                page: Math.min(p.totalPages, p.page + 1),
+              }))
+            }
+          >
+            Next
           </Button>
         </div>
       </div>
 
-      {/* Modal Popup Detail Reservasi */}
+      {/* Modal Detail Reservasi */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
         {selectedReservation && (
           <DialogContent className='sm:max-w-[425px]'>
