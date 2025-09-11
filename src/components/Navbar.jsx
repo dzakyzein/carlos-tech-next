@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSession, signOut } from 'next-auth/react';
+import { IoMdPerson } from 'react-icons/io';
 
 const Navbar = () => {
   const { data: session, status } = useSession();
@@ -81,10 +82,7 @@ const Navbar = () => {
                   className='btn btn-ghost btn-circle avatar'
                 >
                   <div className='w-10 rounded-full border-2 border-secondary overflow-hidden'>
-                    <img
-                      src={session.user.image || '/profile.jpg'}
-                      alt='User Profile'
-                    />
+                    <IoMdPerson size={32} />
                   </div>
                 </button>
 
@@ -101,12 +99,18 @@ const Navbar = () => {
                         <Link
                           href='/profile'
                           onClick={() => setDropdownOpen(false)}
+                          className='block w-full text-left p-2 hover:bg-accentlp hover:text-primarylp transition-colors'
                         >
                           Profile
                         </Link>
                       </li>
                       <li>
-                        <button onClick={handleLogout}>Logout</button>
+                        <button
+                          onClick={handleLogout}
+                          className='block w-full text-left p-2 hover:bg-accentlp hover:text-primarylp transition-colors bg-transparent border-0 cursor-pointer'
+                        >
+                          Logout
+                        </button>
                       </li>
                     </motion.ul>
                   )}
