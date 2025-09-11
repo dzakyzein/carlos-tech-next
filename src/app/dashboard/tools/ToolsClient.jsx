@@ -214,14 +214,24 @@ export default function ToolsClient({ tools }) {
                 />
               </div>
               <div className='space-y-2'>
-                <Label htmlFor='edit-imageUrl'>URL Gambar</Label>
+                <Label htmlFor='edit-image'>Ganti Gambar (opsional)</Label>
                 <Input
-                  id='edit-imageUrl'
-                  name='imageUrl'
-                  type='url'
-                  defaultValue={selectedTool.imageUrl}
+                  id='edit-image'
+                  name='image'
+                  type='file'
+                  accept='image/*'
                 />
+                {selectedTool.imageUrl && (
+                  <Image
+                    src={selectedTool.imageUrl}
+                    alt={selectedTool.title}
+                    width={120}
+                    height={120}
+                    className='mt-2 rounded-md object-cover'
+                  />
+                )}
               </div>
+
               <div className='flex gap-2'>
                 <Button type='submit'>Perbarui</Button>
                 <Button
