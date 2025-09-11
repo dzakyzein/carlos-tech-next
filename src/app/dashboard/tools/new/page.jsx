@@ -19,14 +19,22 @@ export default function NewToolPage() {
     const formData = new FormData(event.currentTarget);
     const file = formData.get('image');
 
-    // Langkah 1: Unggah gambar ke Vercel Blob
+    /// Langkah 1: Unggah gambar ke Vercel Blob
     let imageUrl = '';
-    if (file) {
+    if (file && file.size > 0) {
       try {
-        const response = await fetch(`/api/upload?filename=${file.name}`, {
+        const uploadForm = new FormData();
+        uploadForm.append('file', file);
+
+        const response = await fetch('/api/upload', {
           method: 'POST',
-          body: file,
+          body: uploadForm,
         });
+
+        if (!response.ok) {
+          throw new Error('Upload failed');
+        }
+
         const data = await response.json();
         imageUrl = data.url;
       } catch (error) {
@@ -44,6 +52,9 @@ export default function NewToolPage() {
     toolData.append('imageUrl', imageUrl);
 
     await createTool(toolData);
+    setIsSubmitting(false);
+    event.target.reset(); // reset form
+    window.location.href = '/dashboard/tools'; // redirect balik ke list
   };
 
   return (

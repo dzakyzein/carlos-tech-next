@@ -1,14 +1,23 @@
-// app/api/upload/route.js
-import { put } from '@vercel/blob';
 import { NextResponse } from 'next/server';
+import fs from 'fs';
+import path from 'path';
 
-export async function POST(request) {
-  const { searchParams } = new URL(request.url);
-  const filename = searchParams.get('filename');
+export async function POST(req) {
+  const formData = await req.formData();
+  const file = formData.get('file');
 
-  // Pastikan ada file yang diunggah
-  const blob = await put(filename, request.body, { access: 'public' });
+  if (!file) {
+    return NextResponse.json({ error: 'No file provided' }, { status: 400 });
+  }
 
-  // Kembalikan URL publik dari gambar
-  return NextResponse.json(blob);
+  const buffer = Buffer.from(await file.arrayBuffer());
+  const uploadDir = path.join(process.cwd(), 'public/uploads');
+  if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir, { recursive: true });
+  }
+
+  const filePath = path.join(uploadDir, file.name);
+  fs.writeFileSync(filePath, buffer);
+
+  return NextResponse.json({ url: `/uploads/${file.name}` });
 }

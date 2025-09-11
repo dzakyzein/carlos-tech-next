@@ -25,6 +25,7 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import Link from 'next/link';
+import { toast } from 'sonner';
 
 // Impor Server Actions
 import { updateTool, deleteTool } from '@/actions/tools';
@@ -39,6 +40,11 @@ export default function ToolsClient({ tools }) {
     setIsModalOpen(true);
   };
 
+  const handleCloseModal = () => {
+    setIsEditModalOpen(false);
+    setSelectedTool(null);
+  };
+
   const handleOpenEditModal = (tool) => {
     setSelectedTool(tool);
     setIsEditModalOpen(true);
@@ -47,6 +53,7 @@ export default function ToolsClient({ tools }) {
   const handleDeleteTool = async (id) => {
     if (window.confirm('Apakah Anda yakin ingin menghapus alat ini?')) {
       await deleteTool(id);
+      toast.success('Alat berhasil dihapus');
     }
   };
 
