@@ -8,10 +8,12 @@ import Testimonials from '@/components/Testimonials';
 import CTA from '@/components/CallToAction';
 import Contact from '@/components/Contact';
 import Footer from '@/components/Footer';
+import VisitorTracker from '@/components/VisitorTracker';
 
 export default function Home() {
   return (
     <>
+      <VisitorTracker />
       <Navbar />
       <Hero />
       <AboutSection />
