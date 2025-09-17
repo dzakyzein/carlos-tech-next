@@ -65,3 +65,14 @@ enum Progress {
   P75
   P100
 }
+
+model Visitor {
+  id        Int       @id @default(autoincrement())
+  platform  Platform
+  createdAt DateTime  @default(now())
+}
+
+enum Platform {
+  DESKTOP
+  MOBILE
+}
