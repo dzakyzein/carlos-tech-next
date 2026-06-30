@@ -1,7 +1,13 @@
+// src\app\api\admin\stats\route.js
+
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
+import { requireAdmin } from '@/lib/requireAdmin';
 
 export async function GET() {
+  const { error } = await requireAdmin();
+  if (error) return error;
+
   try {
     const totalReservasi = await prisma.reservation.count();
 
@@ -43,7 +49,7 @@ export async function GET() {
     console.error('Error ambil stats:', error);
     return NextResponse.json(
       { error: 'Gagal ambil statistik' },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
