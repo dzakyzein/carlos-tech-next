@@ -5,6 +5,7 @@ import { getServerSession } from 'next-auth/next';
 import prisma from '@/lib/prisma';
 import { z } from 'zod';
 import { authOptions } from '../auth/[...nextauth]/route';
+import { requireAdmin } from '@/lib/requireAdmin';
 
 const reservationSchema = z.object({
   name: z.string().min(2),
@@ -21,6 +22,9 @@ const reservationSchema = z.object({
 });
 
 export async function GET(req) {
+  const { error } = await requireAdmin();
+  if (error) return error;
+
   try {
     const { searchParams } = new URL(req.url);
     const page = parseInt(searchParams.get('page') || '1', 10);
@@ -48,12 +52,13 @@ export async function GET(req) {
     console.error('Fetch reservations failed:', error);
     return NextResponse.json(
       { message: 'Failed to fetch reservations', error: error.message },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
 
 export async function POST(request) {
+  // Tetap shared — customer & admin sama-sama boleh bikin reservasi
   const session = await getServerSession(authOptions);
 
   if (!session) {
@@ -77,7 +82,7 @@ export async function POST(request) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
         { message: 'Validation error', errors: error.errors },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -88,7 +93,7 @@ export async function POST(request) {
         error: error.message,
         stack: error.stack,
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

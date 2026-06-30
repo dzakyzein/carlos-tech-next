@@ -1,11 +1,8 @@
 import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth/next';
 import prisma from '@/lib/prisma';
 import { z } from 'zod';
-import { authOptions } from '../../auth/[...nextauth]/route';
+import { requireAdmin } from '@/lib/requireAdmin';
 
-// Semua field opsional karena ini partial update —
-// tapi kalau dikirim, harus valid sesuai enum/tipe.
 const updateSchema = z.object({
   status: z.enum(['LUNAS', 'BELUM_LUNAS']).optional(),
   progress: z.enum(['P0', 'P25', 'P50', 'P75', 'P100']).optional(),
@@ -13,11 +10,8 @@ const updateSchema = z.object({
 });
 
 export async function PUT(req, context) {
-  const session = await getServerSession(authOptions);
-
-  if (!session) {
-    return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
-  }
+  const { error } = await requireAdmin();
+  if (error) return error;
 
   const { id } = await context.params;
   const reservationId = Number(id);
@@ -58,14 +52,12 @@ export async function PUT(req, context) {
 
     return NextResponse.json(updatedReservation);
   } catch (error) {
-    // Prisma error P2025 = record not found
     if (error.code === 'P2025') {
       return NextResponse.json(
         { message: 'Reservasi tidak ditemukan' },
         { status: 404 },
       );
     }
-
     console.error('Error update reservation:', error);
     return NextResponse.json(
       { message: 'Gagal update reservasi' },

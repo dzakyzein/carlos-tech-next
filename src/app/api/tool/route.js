@@ -1,9 +1,8 @@
 // src/app/api/tool/route.js
 import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth/next';
 import prisma from '@/lib/prisma';
 import { z } from 'zod';
-import { authOptions } from '../auth/[...nextauth]/route';
+import { requireAdmin } from '@/lib/requireAdmin';
 
 const toolSchema = z.object({
   title: z.string().min(2, 'Judul minimal 2 karakter'),
@@ -12,13 +11,10 @@ const toolSchema = z.object({
   imageUrl: z.string().url('Image harus berupa URL'),
 });
 
-// POST → Tambah tool baru
+// POST → Tambah tool baru (admin only)
 export async function POST(request) {
-  const session = await getServerSession(authOptions);
-
-  if (!session) {
-    return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
-  }
+  const { error } = await requireAdmin();
+  if (error) return error;
 
   try {
     const body = await request.json();
@@ -33,18 +29,18 @@ export async function POST(request) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
         { message: 'Validation error', errors: error.errors },
-        { status: 400 }
+        { status: 400 },
       );
     }
     console.error('Error create tool:', error);
     return NextResponse.json(
       { message: 'Internal server error' },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
 
-// GET → Ambil semua tool
+// GET → Ambil semua tool (public, tetap terbuka)
 export async function GET() {
   try {
     const tools = await prisma.tool.findMany({
@@ -55,7 +51,7 @@ export async function GET() {
     console.error('Error get tools:', error);
     return NextResponse.json(
       { message: 'Internal server error' },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
