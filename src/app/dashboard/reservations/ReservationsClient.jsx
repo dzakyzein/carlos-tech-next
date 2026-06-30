@@ -30,10 +30,20 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Label } from '@/components/ui/label';
 
+// 🔹 Helper format mata uang Rupiah
+const formatRupiah = (value) =>
+  new Intl.NumberFormat('id-ID', {
+    style: 'currency',
+    currency: 'IDR',
+    minimumFractionDigits: 0,
+  }).format(value || 0);
+
 export default function ReservationsClient() {
   const [selectedReservation, setSelectedReservation] = React.useState(null);
   const [isModalOpen, setIsModalOpen] = React.useState(false);
   const [reservationsData, setReservationsData] = React.useState([]);
+  const [priceInput, setPriceInput] = React.useState('');
+  const [isSavingPrice, setIsSavingPrice] = React.useState(false);
   const [pagination, setPagination] = React.useState({
     page: 1,
     limit: 8,
@@ -67,8 +77,8 @@ export default function ReservationsClient() {
     // Optimistic
     setReservationsData((prev) =>
       prev.map((r) =>
-        r.id === reservation.id ? { ...r, status: newStatus } : r
-      )
+        r.id === reservation.id ? { ...r, status: newStatus } : r,
+      ),
     );
 
     try {
@@ -84,8 +94,8 @@ export default function ReservationsClient() {
       // rollback
       setReservationsData((prev) =>
         prev.map((r) =>
-          r.id === reservation.id ? { ...r, status: reservation.status } : r
-        )
+          r.id === reservation.id ? { ...r, status: reservation.status } : r,
+        ),
       );
       toast.error('Gagal mengubah status pembayaran');
     }
@@ -95,8 +105,8 @@ export default function ReservationsClient() {
   const handleUpdateProgress = async (reservation, newProgress) => {
     setReservationsData((prev) =>
       prev.map((r) =>
-        r.id === reservation.id ? { ...r, progress: newProgress } : r
-      )
+        r.id === reservation.id ? { ...r, progress: newProgress } : r,
+      ),
     );
 
     try {
@@ -111,21 +121,65 @@ export default function ReservationsClient() {
     } catch (error) {
       setReservationsData((prev) =>
         prev.map((r) =>
-          r.id === reservation.id ? { ...r, progress: reservation.progress } : r
-        )
+          r.id === reservation.id
+            ? { ...r, progress: reservation.progress }
+            : r,
+        ),
       );
       toast.error('Gagal mengubah progress');
+    }
+  };
+
+  // 🔹 Simpan Harga
+  const handleSavePrice = async () => {
+    if (!selectedReservation) return;
+
+    const newPrice = Number(priceInput);
+
+    if (Number.isNaN(newPrice) || newPrice < 0) {
+      toast.error('Harga tidak valid');
+      return;
+    }
+
+    setIsSavingPrice(true);
+
+    try {
+      const res = await fetch(`/api/reservation/${selectedReservation.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ price: newPrice }),
+      });
+      if (!res.ok) throw new Error('Gagal update harga');
+
+      const updated = await res.json();
+
+      // Sync ke tabel
+      setReservationsData((prev) =>
+        prev.map((r) =>
+          r.id === updated.id ? { ...r, price: updated.price } : r,
+        ),
+      );
+      // Sync ke modal yang sedang terbuka
+      setSelectedReservation((prev) => ({ ...prev, price: updated.price }));
+
+      toast.success('Harga berhasil disimpan');
+    } catch (error) {
+      toast.error('Gagal menyimpan harga');
+    } finally {
+      setIsSavingPrice(false);
     }
   };
 
   // 🔹 Modal
   const handleOpenModal = (reservation) => {
     setSelectedReservation(reservation);
+    setPriceInput(reservation.price?.toString() || '0');
     setIsModalOpen(true);
   };
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setSelectedReservation(null);
+    setPriceInput('');
   };
 
   return (
@@ -141,6 +195,7 @@ export default function ReservationsClient() {
               <TableHead>Status Pembayaran</TableHead>
               <TableHead>Progres</TableHead>
               <TableHead>Jumlah</TableHead>
+              <TableHead>Harga</TableHead>
               <TableHead>Tanggal Dibuat</TableHead>
               <TableHead className='text-right'>Aksi</TableHead>
             </TableRow>
@@ -184,6 +239,7 @@ export default function ReservationsClient() {
                   </DropdownMenu>
                 </TableCell>
                 <TableCell>{reservation.amount}</TableCell>
+                <TableCell>{formatRupiah(reservation.price)}</TableCell>
                 <TableCell>
                   {format(new Date(reservation.createdAt), 'dd MMMM yyyy')}
                 </TableCell>
@@ -255,6 +311,30 @@ export default function ReservationsClient() {
                 <Label className='text-right'>Alamat</Label>
                 <div className='col-span-3'>{selectedReservation.address}</div>
               </div>
+
+              {/* 🔹 Input Harga */}
+              <div className='grid grid-cols-4 items-center gap-4'>
+                <Label className='text-right'>Harga</Label>
+                <div className='col-span-3 flex gap-2'>
+                  <input
+                    type='number'
+                    min='0'
+                    value={priceInput}
+                    onChange={(e) => setPriceInput(e.target.value)}
+                    disabled={isSavingPrice}
+                    className='border rounded px-2 py-1 w-full text-sm bg-transparent disabled:opacity-50'
+                    placeholder='0'
+                  />
+                  <Button
+                    size='sm'
+                    onClick={handleSavePrice}
+                    disabled={isSavingPrice}
+                  >
+                    {isSavingPrice ? 'Menyimpan...' : 'Simpan'}
+                  </Button>
+                </div>
+              </div>
+
               {selectedReservation.note && (
                 <div className='grid grid-cols-4 items-center gap-4'>
                   <Label className='text-right'>Catatan</Label>
